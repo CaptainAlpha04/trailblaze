@@ -2,7 +2,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 
-	export let value = [];
+	export let value = 0;
 	const storedValue = writable(value);
 	setContext('chip', {storedValue, index: 0});
 	

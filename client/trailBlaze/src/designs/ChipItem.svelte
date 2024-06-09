@@ -16,15 +16,18 @@ span {
     color: black;
     background-color: #e0e0e0;
     border-color: #e0e0e0;
-    border-radius: 16px;
-    padding: 6px 10px 6px 10px;
     margin: 4px;
     cursor: pointer;
+    padding: 0.7rem;
     line-height: 36px;
+    border-radius: 1rem;
+    transition: all 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+
 }
+
 .active {
     color: white;
-    background-color: #007bff;
-    transition: all 0.2s cubic-bezier(0.445, 0.05, 0.55, 0.95);
+    background-color: var(--first-primary-color);
+    font-weight: bold;
 }
 </style>

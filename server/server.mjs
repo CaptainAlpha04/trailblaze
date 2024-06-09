@@ -1,16 +1,22 @@
 import express from 'express'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import dotenv from 'dotenv'
+import cors from 'cors'
 dotenv.config()
 
 const app = express()
 const PORT = 3000
 
+app.use(cors({origin: true, credentials: true}))
+app.use(express.json())
+
 const genAI = new GoogleGenerativeAI(process.env.GENAI_API_KEY);
 
-async function run() {
+async function personalizedCareer(req) {
 
    try {
+    const { degree, majorSubject, favouriteHighSchoolSubjects, hobbies, 
+        additionalInterests, fieldsInterestedIn, additionalExperience } = req.body
     const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash",
         systemInstruction: `${process.env.SYSTEM_INSTRUCTIONS}`,
         //generationConfig: {"response_mime_type": "application/json"}
@@ -18,10 +24,17 @@ async function run() {
     }
 );
 
-    const prompt = "I am a UG student of Computer Science. My additional experience is none. My favourite subjects in high school were Mathematics, My hobbies are video games and tourism. I am also interested in Freelancing. The field of Front end dev really intrigues Me. "
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    const text = response.text();
+    const prompt = `
+    I am a ${degree} student with major subject ${majorSubject}.  
+    My favourite subjects in high school were ${favouriteHighSchoolSubjects}.
+    My hobbies are ${hobbies}
+    I am also interested in ${additionalInterests}. 
+    My additional Experience is ${additionalExperience}.
+    The fields I am interested in are ${fieldsInterestedIn}.`
+
+    const result = await model.generateContent(prompt)
+    const response = await result.response
+    const text = response.text()
     console.log(text)
     return text;
    } catch (error) {
@@ -31,9 +44,14 @@ async function run() {
     
 }
 
-run()
-
-app.get('/', async (req, res)=> {
+app.post('/personalized', async (req, res)=> {
+    try {
+        const personalizedResponse = await personalizedCareer(req)
+        res.send({personalizedResponse}).status(200)
+    } catch (error) {
+        console.log(error)
+    
+    }    
 })
 
 app.listen(PORT, () => {
