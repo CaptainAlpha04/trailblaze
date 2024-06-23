@@ -1,6 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams} from 'next/navigation';
 import useFetchCareer from '../../hooks/useFetchCareer'; // Adjust the path as necessary
 import Loading from '../loading';
 
