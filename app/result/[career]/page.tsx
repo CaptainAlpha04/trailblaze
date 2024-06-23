@@ -21,35 +21,16 @@ const getDifficultyClass = (difficulty: string) => {
   }
 };
 
-const Page = () => {
+const Page = async () => {
   const { career } = useParams();
-  const searchParams = useSearchParams();
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+    const result = await useFetchCareer(career);
+    const data = result.data?.message;
+    console.log(data)
 
-  useEffect(() => {
-    const studentData = searchParams.get('studentData');
-    const routeString = searchParams.get('routeString');
-
-    const fetchData = async () => {
-      if (studentData && routeString) {
-        const parsedStudentData = JSON.parse(decodeURIComponent(studentData));
-        const result = await useFetchCareer(parsedStudentData, routeString);
-      } else {
-        const result = await useFetchCareer(career, 'generalized');
-      }
-
-      setData(result.data?.message);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [career, searchParams]);
-
-  if (loading) return <Loading />;
 
   return (
     <section>
+      {!data ? <Loading />:
       <div className="min-h-screen min-w-screen py-20 px-5 font-mono flex flex-wrap gap-5">
         <div className="card w-1/4 bg-base-200 shadow-xl font-mono">
           <div className="card-body">
@@ -253,7 +234,7 @@ const Page = () => {
           </div>
         </div>
 
-      </div>
+      </div>}
     </section>
   );
 };

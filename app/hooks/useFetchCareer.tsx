@@ -3,14 +3,14 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 
 type Career = string | string[] | object;
 
-const useFetchCareerData = (career: Career, route: string) => {
+const useFetchCareerData = (career: Career) => {
     const [data, setData] = useState(null);
     const hasFetched = useRef(false);
 
     const fetchData = useCallback(async () => {
         if (career && !hasFetched.current) {
             hasFetched.current = true;
-            const response = await fetch(`http://localhost:3000/api/${route}`, {
+            const response = await fetch(`http://localhost:3000/api/generalized`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
