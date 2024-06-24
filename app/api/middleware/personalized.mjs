@@ -15,7 +15,7 @@ const schema = {
         "Recommended Career": { type: "string" },
         "Average Salary WorldWide": { type: "string" },
         "About Recommend Career": { type: "string" },
-        "Prerequisites": { type: "array", items: { type: "string" } },
+        "Reasoning": { type: "string" },
         "Roadmap": { type: "string" },
         "Suggested courses": { 
             type: "array", 
@@ -124,7 +124,7 @@ const schema = {
         "Recommended Career",
         "Average Salary WorldWide",
         "About Recommend Career",
-        "Prerequisites",
+        "Reasoning",
         "Roadmap",
         "Suggested courses",
         "Suggested books",
@@ -145,7 +145,7 @@ function cleanJSONResponse(text) {
     return text.replace(/```json|```|`|\*\*/g, '').trim();
 }
 // Function to generate content for a generalized career
-async function generalizedCareer(req) {
+async function personalizedCareer(req) {
     const { degree, major, favouriteHighSchoolSubjects, hobbies, additionalExperience, fieldsInterestedIn } = req;
     try {
         const model = genAI.getGenerativeModel({
@@ -190,4 +190,4 @@ async function generalizedCareer(req) {
     }
 }
 
-export default generalizedCareer;
+export default personalizedCareer;

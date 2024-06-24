@@ -21,10 +21,17 @@ const getDifficultyClass = (difficulty: string) => {
 };
 
 const Page = async () => {
-  const { career } = useParams();
-    const result = await useFetchCareer(career);
-    const data = result.data?.message;
-    console.log(data)
+    const { career } = useParams();
+    let result:any;
+    let data:any;
+
+    if (localStorage.getItem('careerData') && career === JSON.parse(localStorage.getItem('careerData'))?.message['Recommended Career']) {
+      data = JSON.parse(localStorage.getItem('careerData') || '');
+    } else {
+      result = await useFetchCareer(career);
+      data = result.data?.message;
+      console.log(data)
+    }
 
 
   return (

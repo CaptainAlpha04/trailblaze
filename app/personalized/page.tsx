@@ -2,6 +2,7 @@
 import React from 'react'
 import { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
 import {useState} from 'react'
+import {useRouter} from 'next/navigation'
 
 const commonSubjects = ['Math', 'Science', 'History', 'English', 'Art'];
 
@@ -16,6 +17,8 @@ function personalized() {
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [hobbyValue, setHobbyValue] = useState<string>('');
   const [experience, setExperience] = useState<number>(0);
+
+  const router = useRouter();
 
   const handleChipClick = (subject: string) => {
     if (!selectedSubjects.includes(subject)) {
@@ -96,7 +99,8 @@ function personalized() {
     console.log(majorSubject)
   }
 
-  async function submitForm() {
+  async function submitForm(event: MouseEvent) {
+    event?.preventDefault();
     const data = {
     degree: selectedDegree,
     major: majorSubject,
@@ -104,6 +108,26 @@ function personalized() {
     fieldsInterestedIn: selectedFields,
     hobbies: selectedHobbies,
     additionalExperience: experience
+    }
+
+    const response = await fetch('http://localhost:3000/api/fetchCareer', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+  
+    const responseData = await response.json();
+    console.log('before if')
+    if (responseData.message) {
+      console.log('hello world')
+      // Store the data in local storage or context for access on the career details page
+      localStorage.setItem('careerData', JSON.stringify(responseData.message));
+      // Redirect to the career details page
+      router.push(`/result/${majorSubject}`);
+    } else {
+      console.error('Failed to fetch career data:', responseData.error);
     }
     
   }
@@ -136,7 +160,7 @@ function personalized() {
             <div className="justify-start my-2 w-96">
               <h2>Enter your Major</h2>
               <input type="text" className="input mt-2 input-outline input-bordered w-full focus:input-secondary" placeholder="Major Subject..." onKeyDown = {(event) => {handleMajorSubject(event)}} required/>
-           </div>
+          </div>
 
            {/* Favourite Subject */}
       <div className="justify-start my-2 w-96 flex flex-wrap">

@@ -10,7 +10,7 @@ const useFetchCareerData = (career: Career) => {
     const fetchData = useCallback(async () => {
         if (career && !hasFetched.current) {
             hasFetched.current = true;
-            const response = await fetch(`http://localhost:3000/api/generalized`, {
+            const response = await fetch(`/api/fetchCareer`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
