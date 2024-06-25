@@ -1,5 +1,5 @@
 'use client'
-import { useParams} from 'next/navigation';
+import { useParams } from 'next/navigation';
 import useFetchCareer from '../../hooks/useFetchCareer'; // Adjust the path as necessary
 import Loading from '../loading';
 
@@ -12,28 +12,33 @@ const getDifficultyClass = (difficulty: string) => {
     case 'medium':
       return 'text-yellow-500';
     case 'hard':
-      return 'text-red-500';
+      return 'text-orange-500';
     case 'very hard':
+      return 'text-red-500';
+    case 'expert':
       return 'text-purple-500';
     default:
       return '';
   }
 };
 
+const GetData = async (career: any) =>{
+  return await useFetchCareer(career);
+}
+
 const Page = async () => {
     const { career } = useParams();
     let result:any;
     let data:any;
-
-    if (localStorage.getItem('careerData') && career === JSON.parse(localStorage.getItem('careerData'))?.message['Recommended Career']) {
+  if(typeof window !== 'undefined') {
+    if (localStorage.getItem('careerData')) {
       data = JSON.parse(localStorage.getItem('careerData') || '');
     } else {
-      result = await useFetchCareer(career);
+      result = await GetData(career);
       data = result.data?.message;
       console.log(data)
     }
-
-
+  }
   return (
     <section>
       {!data ? <Loading />:
@@ -83,7 +88,7 @@ const Page = async () => {
 
         <div className="card w-2/5 bg-base-200 shadow-xl font-mono">
         <div className="card-body">
-          <h1 className="card-title">Prerequisite</h1>
+          <h1 className="card-title">Reasoning</h1>
           <h2 className="text-s">
             {data['Reasoning']}
           </h2>

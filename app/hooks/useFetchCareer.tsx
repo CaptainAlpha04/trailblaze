@@ -27,6 +27,7 @@ const useFetchCareerData = (career: Career) => {
     }, [fetchData]);
 
     return {data};
+
 };
 
 export default useFetchCareerData;

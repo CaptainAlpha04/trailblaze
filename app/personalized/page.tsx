@@ -1,14 +1,15 @@
 'use client'
-import React from 'react'
+import React, { use } from 'react'
 import { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
 import {useState} from 'react'
+import Loading from '../result/loading'
 import {useRouter} from 'next/navigation'
 
 const commonSubjects = ['Math', 'Science', 'History', 'English', 'Art'];
 
-function personalized() {
-  const [selectedDegree, setSelectedDegree] = React.useState<string>('Bachelor');
-  const [majorSubject, setMajorSubject] = React.useState<string>('');
+function Personalized() {
+  const [selectedDegree, setSelectedDegree] = useState<string>('Bachelor');
+  const [majorSubject, setMajorSubject] = useState<string>('');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [subjectValue, setSubjectValue] = useState<string>('');
   const [suggestions, setSuggestions] = useState<string[]>([]);
@@ -17,6 +18,8 @@ function personalized() {
   const [selectedHobbies, setSelectedHobbies] = useState<string[]>([]);
   const [hobbyValue, setHobbyValue] = useState<string>('');
   const [experience, setExperience] = useState<number>(0);
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
 
@@ -99,8 +102,15 @@ function personalized() {
     console.log(majorSubject)
   }
 
+  const handleFormKeyDown = (event: KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      event.preventDefault();
+
+    }
+  }
+
   async function submitForm(event: MouseEvent) {
-    event?.preventDefault();
+
     const data = {
     degree: selectedDegree,
     major: majorSubject,
@@ -109,7 +119,7 @@ function personalized() {
     hobbies: selectedHobbies,
     additionalExperience: experience
     }
-
+    setLoading(true);
     const response = await fetch('http://localhost:3000/api/fetchCareer', {
       method: 'POST',
       headers: {
@@ -117,24 +127,20 @@ function personalized() {
       },
       body: JSON.stringify(data)
     });
+      const responseData = await response.json();
   
-    const responseData = await response.json();
-    console.log('before if')
-    if (responseData.message) {
-      console.log('hello world')
       // Store the data in local storage or context for access on the career details page
       localStorage.setItem('careerData', JSON.stringify(responseData.message));
       // Redirect to the career details page
       router.push(`/result/${majorSubject}`);
-    } else {
-      console.error('Failed to fetch career data:', responseData.error);
-    }
-    
   }
 
+  if (loading) {
+    return <Loading />;
+  } else {
   return (
     <>
-    <form className="min-h-screen min-w-screen py-20 px-5 flex gap-5 flex-wrap">
+    <form className="min-h-screen min-w-screen py-20 px-5 flex gap-5 flex-wrap" onKeyDown={handleFormKeyDown}>
     
       {/* Educational Info Card */}
       <div className="card w-fit bg-base-200 shadow-xl font-mono">
@@ -286,5 +292,6 @@ function personalized() {
     </>
   )
 }
+}
 
-export default personalized
+export default Personalized
