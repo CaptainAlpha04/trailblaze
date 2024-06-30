@@ -18,7 +18,7 @@
                 console.log(body)
                 console.time('generate Content');
                 const data = await personalized(body); // Assuming model returns the required data structure
-                console.timeEnd('generate Content');
+                console.timeEnd('generate Content'); // Assuming model returns the required data structure
                 console.log(data);
                 return NextResponse.json({ message: data}, { status: 200 });
             }

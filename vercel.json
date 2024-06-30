@@ -1,6 +1,6 @@
 {
     "functions": {
-      "api/fetchCareer": {
+      "/api/fetchCareer": {
         "maxDuration": 40
       }
     }
