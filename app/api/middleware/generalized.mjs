@@ -5,7 +5,9 @@ import Ajv from 'ajv';
 dotenv.config();
 
 // Create a new instance of the GoogleGenerativeAI class
+console.log('Verifying API key:', process.env.GENAI_API_KEY); 
 const genAI = new GoogleGenerativeAI(process.env.GENAI_API_KEY);
+console.log('API key verified:', genAI);
 
 const ajv = new Ajv();
 
