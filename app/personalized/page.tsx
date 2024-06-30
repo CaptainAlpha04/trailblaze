@@ -1,13 +1,14 @@
 'use client'
 import React, { use } from 'react'
 import { MouseEvent, KeyboardEvent, ChangeEvent } from 'react'
-import {useState} from 'react'
+import {useState, useEffect} from 'react'
 import Loading from '../result/loading'
 import {useRouter} from 'next/navigation'
 
 const commonSubjects = ['Math', 'Science', 'History', 'English', 'Art'];
 
 function Personalized() {
+  const [innerWidth, setInnerWidth] = useState<number>(0);
   const [selectedDegree, setSelectedDegree] = useState<string>('Bachelor');
   const [majorSubject, setMajorSubject] = useState<string>('');
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
@@ -22,6 +23,13 @@ function Personalized() {
   const [loading, setLoading] = useState<boolean>(false);
 
   const router = useRouter();
+
+  useEffect(() => {
+    setInnerWidth(window.innerWidth);
+    window.addEventListener('resize', () => {
+      setInnerWidth(window.innerWidth);
+    });
+  }, []);
 
   const handleChipClick = (subject: string) => {
     if (!selectedSubjects.includes(subject)) {
@@ -137,10 +145,164 @@ function Personalized() {
 
   if (loading) {
     return <Loading />;
+  } else if (innerWidth < 786) {
+    return (
+      <>
+      <form className="min-h-screen w-screen py-20 px-5 flex gap-5 flex-wrap text-base-content" onKeyDown={handleFormKeyDown}>
+      
+        {/* Educational Info Card */}
+        <div className="card bg-base-200 shadow-xl font-mono w-screen">
+          <div className="card-body">
+            <h1 className="card-title text-2xl">Educational Information</h1>
+            
+            {/* Degree Level Area */}
+            <div className="justify-start my-2">
+              <h2 className="text-md">Choose degree level</h2>
+              <div className='flex mt-2 gap-2 flex-wrap'>
+                {['High School', 'Bachelor', 'Masters', 'PhD'].map((degree) => (
+                  <div
+                    key={degree}
+                    className={`btn rounded-full ${selectedDegree === degree ? 'btn-success' : 'btn-outline'}`}
+                    onClick={(event) => handleDegreeChange(event, degree)}
+                  >
+                    <label>{degree}</label>
+                  </div>
+                ))}
+              </div>
+            </div>
+  
+              <div className="justify-start my-2 w-full">
+                <h2>Enter your Major</h2>
+                <input type="text" className="input mt-2 input-outline input-bordered w-full focus:input-secondary" placeholder="Major Subject..." onKeyDown = {(event) => {handleMajorSubject(event)}} required/>
+            </div>
+  
+             {/* Favourite Subject */}
+        <div className="justify-start my-2 w-full flex flex-wrap">
+        <h2>Choose Favourite Subject(s)</h2>
+        <div className="mt-2 w-full">
+          <div className="flex flex-wrap gap-2">
+            {commonSubjects.map((subject, index) => (
+              <span
+                key={index}
+                className={`chip badge badge-outline cursor-pointer my-1 ${selectedSubjects.includes(subject) ? 'badge-secondary' : ''}`}
+                onClick={() => handleChipClick(subject)}
+              >
+                {subject}
+              </span>
+            ))}
+          </div>
+          <input
+            type="text"
+            className="input mt-2 input-outline input-bordered w-full focus:input-secondary"
+            placeholder="Favourite Subjects..."
+            value={subjectValue}
+            onChange={handleInputChange}
+            onKeyDown={handleInputKeyDown}
+          />
+          {suggestions.length > 0 && (
+            <div className="bg-base-300 border-base-300 mt-1 rounded-lg w-96">
+              {suggestions.map((suggestion, index) => (
+                <div
+                  key={index}
+                  className="p-2 cursor-pointer hover:bg-base-100 rounded-sm"
+                  onClick={() => handleSuggestionClick(suggestion)}
+                >
+                  {suggestion}
+                </div>
+              ))}
+            </div>
+          )}
+          <div className="mt-2">
+            {selectedSubjects.map((subject, index) => (
+              <span key={index} className="chip badge badge-primary m-1 hover:cursor-pointer" onClick={handleChipRemoval}>
+                {subject}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+  
+      {/* Fields Interested In */}
+      <div className="justify-start my-2 w-full flex flex-wrap">
+        <h2>Interested Field(s)</h2>
+        <div className="mt-2 w-full">
+          <input
+            type="text"
+            className="input mt-2 input-outline input-bordered w-full focus:input-secondary"
+            placeholder="Interested Fields..."
+            value={fieldValue}
+            onChange={(event) => setFieldValue(event.target.value)}
+            onKeyDown={handleFieldInputKeyDown}
+            
+            />
+  
+          <div className="mt-2">
+            {selectedFields.map((Field, index) => (
+              <span key={index} className="chip badge badge-accent m-1 hover:cursor-pointer" onClick={handleFieldChipRemoval}>
+                {Field}
+              </span>
+            ))}
+          </div>
+        </div>
+      </div>
+  
+  
+      </div>
+      </div>
+  
+      {/* Additional Information Card */}      
+      <div className="card w-screen bg-base-200 shadow-xl font-mono h-fit">
+        <div className='card-body'>
+          <h1 className="card-title text-2xl">Additional Information</h1>
+  
+  
+          {/* Hobbies In */}
+            <div className="justify-start my-2 w-full flex flex-wrap">
+              <h2>Hobbies</h2>
+              <div className="mt-2 w-full">
+                <input
+                  type="text"
+                  className="input mt-2 input-outline input-bordered w-full focus:input-secondary"
+                  placeholder="Hobbies..."
+                  value={hobbyValue}
+                  onChange={(event) => setHobbyValue(event.target.value)}
+                  onKeyDown={handlehobbyInputKeyDown}
+                  
+                  />
+  
+                <div className="mt-2 w-full">
+                  {selectedHobbies.map((Hobby, index) => (
+                    <span key={index} className="chip badge badge-secondary m-1 hover:cursor-pointer" onClick={handleHobbyChipRemoval}>
+                      {Hobby}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+  
+            {/* Experience */}
+            <div className='justify-start my-2 w-full flex flex-wrap'>
+              <h2>Experience in given Field (years)</h2>
+              <div className='flex gap-2 align-middle w-full justify-between'>
+                <input type="range" min={0} max={50} value={experience} className="range my-5" required onChange={(event) => setExperience(parseInt(event.target.value))}/>
+                <input type="number" value={experience} className="input mt-2 input-outline input-bordered w-11 focus:input-secondary no-spinner" onChange={(event) => setExperience(parseInt(event.target.value))}/>
+              </div>
+                
+            </div>
+          
+      <button type="submit" className='btn btn-primary' onClick={submitForm}>
+        Submit
+      </button>
+  
+        </div>
+      </div>
+    </form>
+      </>
+    )
   } else {
   return (
     <>
-    <form className="min-h-screen min-w-screen py-20 px-5 flex gap-5 flex-wrap" onKeyDown={handleFormKeyDown}>
+    <form className="min-h-screen min-w-screen py-20 px-5 flex gap-5 flex-wrap text-base-content" onKeyDown={handleFormKeyDown}>
     
       {/* Educational Info Card */}
       <div className="card w-fit bg-base-200 shadow-xl font-mono">
@@ -293,5 +455,4 @@ function Personalized() {
   )
 }
 }
-
 export default Personalized

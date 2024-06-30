@@ -1,6 +1,6 @@
 'use client'
 import Link from 'next/link'
-import { MouseEvent, useEffect, KeyboardEvent } from 'react'
+import { useEffect, KeyboardEvent, useState } from 'react'
 
 function randomFieldValue() {
   const fields = [
@@ -22,7 +22,6 @@ function randomFieldValue() {
   return fields[Math.floor(Math.random() * fields.length)];
 }
 
-
 async function handleRequest() {
     const career: string = (document.getElementById("generalizedInput") as HTMLInputElement).value;
     if (career === "") {
@@ -40,6 +39,13 @@ function handleKeyDown(e: KeyboardEvent) {
 }
 
 function Page() {
+  const [innerWidth, setInnerWidth] = useState<number>(0);
+  useEffect(() => {
+    setInnerWidth(window.innerWidth);
+    window.addEventListener('resize', () => {
+      setInnerWidth(window.innerWidth);
+    });
+  }, []);
 
   useEffect(()=>{
     if(localStorage.getItem('careerData')){
@@ -49,6 +55,48 @@ function Page() {
 
 
   const value = randomFieldValue();
+
+  // Mobile View
+  if (innerWidth < 786) {
+    return (
+      <>
+      <dialog id="input_alert" className="modal">
+      <div className="modal-box">
+        <h3 className="font-bold text-lg">Please Enter a valid Career!</h3>
+      </div>
+      <form method="dialog" className="modal-backdrop">
+        <button>close</button>
+      </form>
+    </dialog>
+
+    <section className="bg-cover" style={{ backgroundImage: 'url("https://www.10wallpaper.com/wallpaper/1366x768/1709/Lines_grid_black-Vector_HD_Wallpaper_1366x768.jpg")' }}>
+      <div className="min-h-screen min-w-screen font-mono flex flex-col">
+        <div className='mt-32 p-5 flex flex-col items-center'>
+          <h1 className="text-4xl font-bold">Hello There!</h1>
+          <p className="py-6 text-pretty">Welcome to 🔥TrailBlaze: Your AI-Powered Platform for Discovering the Perfect Career Path!</p>
+        </div>
+        <div>
+          <div className='w-screen px-5 flex flex-col gap-2'>
+            <p>Enter a career below to get a quick generalized overview!</p>
+          <input id = "generalizedInput" type="text" placeholder={value + "..."} className="input input-bordered w-full bg-base-300" onKeyDown={handleKeyDown} />
+          <button className="btn btn-primary max-w-screen w-full" onClick = {handleRequest}>{"Let's Go"}</button>
+        </div>
+
+        <div className="divider">OR</div>
+        <div className="flex flex-col items-center w-screen px-5">
+        <h2 className="text-1xl m-3">Let the AI find the right Career for you!✌️ </h2>
+          <Link href="/personalized" className='w-full'>
+          <button className="btn btn-neutral w-full">Get Started! 
+          </button>
+          </Link>
+        </div>
+          </div>
+      </div>
+    </section>
+      </>
+    )  
+  }
+  else { 
   return (
     <>
     <dialog id="input_alert" className="modal">
@@ -88,6 +136,6 @@ function Page() {
     </section>
     </>
   )
-}
+}}
 
 export default Page
